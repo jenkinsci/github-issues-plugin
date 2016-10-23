@@ -1,0 +1,4 @@
+<?jelly escape-by-default='true'?>
+<div>
+  This plugin creates GitHub issues when builds fail, and automatically closes the issue when the build starts passing again.
+</div>
