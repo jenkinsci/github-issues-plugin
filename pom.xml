@@ -22,7 +22,7 @@
 
   <name>GitHub Issues Plugin</name>
   <description>Reports build failures as issues on GitHub</description>
-  <url>https://dl.vc/jenkins-github-issues</url>
+  <url>https://wiki.jenkins-ci.org/display/JENKINS/GitHub+Issues+Plugin</url>
 
   <dependencies>
     <dependency>
@@ -53,9 +53,9 @@
   </developers>
 
   <scm>
-    <connection>scm:git:git://github.com/Daniel15/jenkins-${project.artifactId}-plugin.git</connection>
-    <developerConnection>scm:git:git@github.com:Daniel15/jenkins-${project.artifactId}-plugin.git</developerConnection>
-    <url>http://github.com/Daniel15/jenkins-${project.artifactId}-plugin</url>
+    <connection>scm:git:git://github.com/jenkinsci/${project.artifactId}-plugin.git</connection>
+    <developerConnection>scm:git:git@github.com:jenkinsci/${project.artifactId}-plugin.git</developerConnection>
+    <url>http://github.com/jenkinsci/${project.artifactId}-plugin</url>
   </scm>
   <repositories>
     <repository>
