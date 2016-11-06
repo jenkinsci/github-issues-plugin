@@ -40,9 +40,9 @@ public class GitHubIssueJobProperty extends JobProperty<Job<?, ?>> {
      * Gets the {@link GitHubIssueJobProperty} for the specified job. If the job does not yet have this property,
      * creates a new instance
      *
-     * @param job
+     * @param job Jenkins jobs to get the GitHubIssueJobProperty for
      * @return The GitHubIssueJobProperty
-     * @throws IOException
+     * @throws IOException If there is an error getting the property
      */
     public static GitHubIssueJobProperty getOrCreateForJob(Job<?, ?> job) throws IOException {
         GitHubIssueJobProperty property = job.getProperty(GitHubIssueJobProperty.class);

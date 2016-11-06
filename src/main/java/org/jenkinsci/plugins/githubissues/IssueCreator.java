@@ -29,6 +29,8 @@ public abstract class IssueCreator {
      * Formats text for a GitHub issue, replacing placeholders like {NAME} and {URL}.
      * @param text Text to format
      * @param run The build run
+     * @param listener Build listener
+     * @param workspace Build workspace
      * @return Formatted text
      * @throws IOException
      */
@@ -39,8 +41,9 @@ public abstract class IssueCreator {
         FilePath workspace
     ) throws IOException {
         if (privateTokens == null) {
-            privateTokens = new ArrayList<>();
-            privateTokens.add(new OutputTokenMacro());
+            ArrayList<TokenMacro> newPrivateTokens = new ArrayList<>();
+            newPrivateTokens.add(new OutputTokenMacro());
+            privateTokens = newPrivateTokens;
         }
 
         try {
@@ -56,6 +59,8 @@ public abstract class IssueCreator {
      * @param run Build that failed
      * @param descriptor Descriptor for GitHubIssueNotifier
      * @param repo Repository to create the issue in
+     * @param listener Build listener
+     * @param workspace Build workspace
      * @return The issue that was created
      * @throws IOException
      */

@@ -56,7 +56,7 @@ public class GitHubIssueNotifier extends Notifier implements SimpleBuildStep {
     public GHRepository getRepoForJob(Job<?, ?> job) {
         GithubProjectProperty foo = job.getProperty(GithubProjectProperty.class);
         GitHubRepositoryName repoName = GitHubRepositoryName.create(foo.getProjectUrlStr());
-        return repoName.resolveOne();
+        return repoName == null ? null : repoName.resolveOne();
     }
 
     @Override
@@ -80,7 +80,7 @@ public class GitHubIssueNotifier extends Notifier implements SimpleBuildStep {
         } else if ((result == Result.FAILURE || result == Result.UNSTABLE) && hasIssue) {
             // Issue was already created for a previous failure
             logger.format(
-                "GitHub Issue Notifier: Build is still failing and issue #%s already exists. Not sending anything to GitHub issues",
+                "GitHub Issue Notifier: Build is still failing and issue #%s already exists. Not sending anything to GitHub issues%n",
                 property.getIssueNumber()
             );
             return;
@@ -95,11 +95,11 @@ public class GitHubIssueNotifier extends Notifier implements SimpleBuildStep {
 
         if (result == Result.FAILURE || result == Result.UNSTABLE) {
             GHIssue issue = IssueCreator.createIssue(run, getDescriptor(), repo, listener, workspace);
-            logger.format("GitHub Issue Notifier: Build has started failing, filed GitHub issue #%s\n", issue.getNumber());
+            logger.format("GitHub Issue Notifier: Build has started failing, filed GitHub issue #%s%n", issue.getNumber());
             property.setIssueNumber(issue.getNumber());
             job.save();
         } else if (result == Result.SUCCESS) {
-            logger.format("GitHub Issue Notifier: Build was fixed, closing GitHub issue #%s", property.getIssueNumber());
+            logger.format("GitHub Issue Notifier: Build was fixed, closing GitHub issue #%s%n", property.getIssueNumber());
             GHIssue issue = repo.getIssue(property.getIssueNumber());
             issue.comment("Build was fixed!");
             issue.close();
