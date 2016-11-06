@@ -94,7 +94,7 @@ public class GitHubIssueNotifier extends Notifier implements SimpleBuildStep {
         }
 
         if (result == Result.FAILURE || result == Result.UNSTABLE) {
-            GHIssue issue = IssueCreator.createIssue(run, getDescriptor(), repo);
+            GHIssue issue = IssueCreator.createIssue(run, getDescriptor(), repo, listener, workspace);
             logger.format("GitHub Issue Notifier: Build has started failing, filed GitHub issue #%s\n", issue.getNumber());
             property.setIssueNumber(issue.getNumber());
             job.save();
@@ -110,14 +110,14 @@ public class GitHubIssueNotifier extends Notifier implements SimpleBuildStep {
 
     @Extension
     public static final class DescriptorImpl extends BuildStepDescriptor<Publisher> {
-        private String issueTitle = "Build '{NAME}' is failing";
+        private String issueTitle = "$JOB_NAME $BUILD_DISPLAY_NAME failed";
         private String issueBody =
-            "Build '{NAME}' is failing!\n\n" +
+            "Build '$JOB_NAME' is failing!\n\n" +
             "Last 50 lines of build output:\n\n" +
             "```\n" +
-            "{OUTPUT}\n" +
+            "${OUTPUT, lines=50}\n" +
             "```\n\n" + "" +
-            "[View full output]({URL})";
+            "[View full output]($BUILD_URL)";
         private String issueLabel;
 
         public DescriptorImpl() {
