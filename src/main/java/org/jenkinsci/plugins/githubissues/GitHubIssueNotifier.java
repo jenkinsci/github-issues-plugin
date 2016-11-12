@@ -19,6 +19,7 @@ import hudson.tasks.Notifier;
 import hudson.tasks.Publisher;
 import jenkins.tasks.SimpleBuildStep;
 import net.sf.json.JSONObject;
+import org.jenkinsci.plugins.githubissues.exceptions.GitHubRepositoryException;
 import org.kohsuke.github.GHIssue;
 import org.kohsuke.github.GHRepository;
 import org.kohsuke.stapler.DataBoundConstructor;
@@ -50,13 +51,35 @@ public class GitHubIssueNotifier extends Notifier implements SimpleBuildStep {
 
     /**
      * Gets the GitHub repository for the specified job.
-     * @param job The job
-     * @return The GitHub repository
+     *
+     * @param run The run
+     * @return The GitHub repository, or null if there's no GitHub repository for this run
+     * @throws GitHubRepositoryException when the GitHub repository can not be loaded
      */
-    public GHRepository getRepoForJob(Job<?, ?> job) {
-        GithubProjectProperty foo = job.getProperty(GithubProjectProperty.class);
-        GitHubRepositoryName repoName = GitHubRepositoryName.create(foo.getProjectUrlStr());
-        return repoName == null ? null : repoName.resolveOne();
+    private GHRepository getRepoForRun(Run<?, ?> run) throws GitHubRepositoryException {
+        Job<?, ?> rootJob = run.getParent();
+        if (run instanceof AbstractBuild<?, ?>) {
+            // If the run is an AbstractBuild, it could be a build that contains a root build (for example, a
+            // multi-build project). In that case, we need to get the root project as that's where the GitHub settings
+            // are configured.
+            rootJob = ((AbstractBuild) run).getRootBuild().getProject();
+        }
+        GithubProjectProperty gitHubProperty = rootJob.getProperty(GithubProjectProperty.class);
+        if (gitHubProperty == null) {
+            throw new GitHubRepositoryException("GitHub property not configured");
+        }
+        GitHubRepositoryName repoName = GitHubRepositoryName.create(gitHubProperty.getProjectUrlStr());
+        if (repoName == null) {
+            throw new GitHubRepositoryException("GitHub project not configured");
+        }
+        GHRepository repo = repoName.resolveOne();
+        if (repo == null) {
+            throw new GitHubRepositoryException(
+                "Could not connect to GitHub repository. Please double-check that you have correctly configured a " +
+                "GitHub API key."
+            );
+        }
+        return repo;
     }
 
     @Override
@@ -87,9 +110,11 @@ public class GitHubIssueNotifier extends Notifier implements SimpleBuildStep {
         }
 
         // If we got here, we need to grab the repo to create an issue (or close an existing issue)
-        GHRepository repo = getRepoForJob(run.getParent());
-        if (repo == null) {
-            logger.println("WARNING: No GitHub config available for this job, GitHub Issue Notifier will not run!");
+        GHRepository repo;
+        try {
+            repo = getRepoForRun(run);
+        } catch (GitHubRepositoryException ex) {
+            logger.println("WARNING: No GitHub config available for this job, GitHub Issue Notifier will not run! Error: " + ex.getMessage());
             return;
         }
 
