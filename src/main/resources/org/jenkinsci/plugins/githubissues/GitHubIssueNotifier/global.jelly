@@ -10,5 +10,6 @@
         <f:entry title="Issue Label" field="issueLabel">
             <f:textbox />
         </f:entry>
+        <f:entry title="Content Token Reference" field="tokens" />
     </f:section>
 </j:jelly>
