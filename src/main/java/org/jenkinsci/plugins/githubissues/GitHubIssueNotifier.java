@@ -34,9 +34,36 @@ import java.io.PrintStream;
  * passing again.
  */
 public class GitHubIssueNotifier extends Notifier implements SimpleBuildStep {
+    private final boolean useCustomTemplate;
+    private final String customTitle;
+    private final String customBody;
+    private final String customLabel;
 
     @DataBoundConstructor
-    public GitHubIssueNotifier() {
+    public GitHubIssueNotifier(boolean useCustomTemplate, String customTitle, String customBody, String customLabel) {
+        this.useCustomTemplate = useCustomTemplate;
+        if (useCustomTemplate) {
+            this.customTitle = customTitle;
+            this.customBody = customBody;
+            this.customLabel = customLabel;
+        } else {
+            this.customTitle = null;
+            this.customBody = null;
+            this.customLabel = null;
+        }
+    }
+
+    public String getCustomTitle() {
+        return customTitle;
+    }
+    public String getCustomBody() {
+        return customBody;
+    }
+    public String getCustomLabel() {
+        return customLabel;
+    }
+    public boolean getUseCustomTemplate() {
+        return useCustomTemplate;
     }
 
     @Override
@@ -119,7 +146,7 @@ public class GitHubIssueNotifier extends Notifier implements SimpleBuildStep {
         }
 
         if (result == Result.FAILURE || result == Result.UNSTABLE) {
-            GHIssue issue = IssueCreator.createIssue(run, getDescriptor(), repo, listener, workspace);
+            GHIssue issue = IssueCreator.createIssue(run, this, repo, listener, workspace);
             logger.format("GitHub Issue Notifier: Build has started failing, filed GitHub issue #%s%n", issue.getNumber());
             property.setIssueNumber(issue.getNumber());
             job.save();

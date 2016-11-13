@@ -11,6 +11,7 @@ package org.jenkinsci.plugins.githubissues;
 import hudson.FilePath;
 import hudson.model.Run;
 import hudson.model.TaskListener;
+import org.apache.commons.lang.StringUtils;
 import org.jenkinsci.plugins.tokenmacro.TokenMacro;
 import org.kohsuke.github.GHIssue;
 import org.kohsuke.github.GHIssueBuilder;
@@ -57,26 +58,30 @@ public abstract class IssueCreator {
     /**
      * Creates a GitHub issue for a failing build
      * @param run Build that failed
-     * @param descriptor Descriptor for GitHubIssueNotifier
+     * @param notifier The instance of GitHubIssueNotifier
      * @param repo Repository to create the issue in
      * @param listener Build listener
      * @param workspace Build workspace
      * @return The issue that was created
-     * @throws IOException
+     * @throws IOException If creating the issue fails
      */
     public static GHIssue createIssue(
         Run<?, ?> run,
-        GitHubIssueNotifier.DescriptorImpl descriptor,
+        GitHubIssueNotifier notifier,
         GHRepository repo,
         TaskListener listener,
         FilePath workspace
     ) throws IOException {
-        GHIssueBuilder issue = repo.createIssue(formatText(descriptor.getIssueTitle(), run, listener, workspace))
-            .body(formatText(descriptor.getIssueBody(), run, listener, workspace));
+        GitHubIssueNotifier.DescriptorImpl descriptor = notifier.getDescriptor();
+        String title = StringUtils.defaultIfBlank(notifier.getCustomTitle(), descriptor.getIssueTitle());
+        String body = StringUtils.defaultIfBlank(notifier.getCustomBody(), descriptor.getIssueBody());
+        String label = StringUtils.defaultIfBlank(notifier.getCustomLabel(), descriptor.getIssueLabel());
 
-        String issueLabel = descriptor.getIssueLabel();
-        if (issueLabel != null && !issueLabel.isEmpty()) {
-            issue = issue.label(issueLabel);
+        GHIssueBuilder issue = repo.createIssue(formatText(title, run, listener, workspace))
+            .body(formatText(body, run, listener, workspace));
+
+        if (label != null && !label.isEmpty()) {
+            issue = issue.label(label);
         }
         return issue.create();
     }
