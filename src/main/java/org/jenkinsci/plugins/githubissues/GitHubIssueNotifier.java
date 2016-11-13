@@ -167,8 +167,10 @@ public class GitHubIssueNotifier extends Notifier implements SimpleBuildStep {
             "Build '$JOB_NAME' is failing!\n\n" +
             "Last 50 lines of build output:\n\n" +
             "```\n" +
-            "${OUTPUT, lines=50}\n" +
-            "```\n\n" + "" +
+            "${BUILD_LOG, maxLines=50}\n" +
+            "```\n\n" +
+            "Changes since last successful build:\n" +
+            "${CHANGES_SINCE_LAST_SUCCESS, format=\"%c\", changesFormat=\"- [%a] %r - %m\\n\"}\n\n" +
             "[View full output]($BUILD_URL)";
         private String issueLabel;
 
