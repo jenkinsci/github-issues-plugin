@@ -1,6 +1,6 @@
 *.class
 target/
-work/
+/work/
 
 # Package Files #
 *.jar
@@ -11,12 +11,5 @@ work/
 hs_err_pid*
 
 # IntelliJ stuff
-.idea/workspace.xml
-.idea/tasks.xml
-.idea/dataSources.ids
-.idea/dataSources.xml
-.idea/dataSources.local.xml
-.idea/sqlDataSources.xml
-.idea/dynamic.xml
-.idea/uiDesigner.xml
-.idea/libraries
+.idea/
+*.iml
