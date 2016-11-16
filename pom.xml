@@ -74,4 +74,47 @@
       <url>https://repo.jenkins-ci.org/public/</url>
     </pluginRepository>
   </pluginRepositories>
+
+  <profiles>
+    <profile>
+      <!-- Automatically create the base configuration for the Jenkins development workspace when it doesn't exist. -->
+      <id>prepare-developement-workspace</id>
+      <activation>
+        <file>
+          <missing>${basedir}/work</missing>
+        </file>
+      </activation>
+      <properties>
+        <github.test.project>https://github.com/YOUR_NAME/DUMMY_REPO/</github.test.project>
+      </properties>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-resources-plugin</artifactId>
+            <version>2.7</version>
+            <executions>
+              <execution>
+                <id>workspace-base-configuration</id>
+                <phase>generate-resources</phase>
+                <goals>
+                  <goal>copy-resources</goal>
+                </goals>
+                <configuration>
+                  <resources>
+                    <resource>
+                      <directory>${project.basedir}/src/dev/assets/work</directory>
+                      <filtering>true</filtering>
+                    </resource>
+                  </resources>
+                  <outputDirectory>${project.basedir}/work</outputDirectory>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
+
 </project>
