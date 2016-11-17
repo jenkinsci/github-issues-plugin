@@ -1,0 +1,23 @@
+<?jelly escape-by-default='true'?>
+<j:jelly xmlns:j="jelly:core">
+    <j:choose>
+        <j:when test="${it.isOpened()}">
+            <a href="${it.issueUrl}" target="_blank">
+                <img width="16" height="16" title="See GitHub Issue ${it.issueNumber}" src="${rootURL}/plugin/github-issues/img/issue-opened.svg"/>
+            </a>
+        </j:when>
+        <j:when test="${it.isClosed()}">
+            <a href="${it.issueUrl}" target="_blank">
+                <img width="16" height="16" title="${it.issueNumber}" src="${rootURL}/plugin/github-issues/img/issue-closed.svg"/>
+            </a>
+        </j:when>
+        <j:when test="${it.isReopened()}">
+            <a href="${it.issueUrl}" target="_blank">
+                <img width="16" height="16" title="${it.issueNumber}" src="${rootURL}/plugin/github-issues/img/issue-reopened.svg"/>
+            </a>
+        </j:when>
+        <j:otherwise>
+            <!-- Don't display any badge -->
+        </j:otherwise>
+    </j:choose>
+</j:jelly>

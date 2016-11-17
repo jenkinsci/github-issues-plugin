@@ -1,0 +1,25 @@
+<?jelly escape-by-default='true'?>
+<j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define" xmlns:l="/lib/layout" xmlns:t="/lib/hudson" xmlns:f="/lib/form">
+    <f:block>
+        <f:optionalBlock name="useCustomTemplate" inline="true" title="Customize issue template" checked="${instance.useCustomTemplate}">
+            <f:entry title="Issue Title Template" field="issueTitle">
+                <f:textbox />
+            </f:entry>
+            <f:entry title="Issue Body Template" field="issueBody">
+                <f:textarea />
+            </f:entry>
+            <f:entry title="Issue Label" field="issueLabel">
+                <f:textbox />
+            </f:entry>
+            <f:entry title="Reopen issue" field="issueReopen">
+                 <f:checkbox default="true"/>
+            </f:entry>
+            <f:entry title="Append Failures on next job to existing issue" field="issueAppend">
+                 <f:checkbox default="true"/>
+            </f:entry>
+            <f:entry title="Issue Repository" field="issueRepo">
+                <f:textbox/>
+            </f:entry>
+        </f:optionalBlock>
+    </f:block>
+</j:jelly>

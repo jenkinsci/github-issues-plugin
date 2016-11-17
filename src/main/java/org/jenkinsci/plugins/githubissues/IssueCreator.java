@@ -33,7 +33,7 @@ public abstract class IssueCreator {
      * @param listener Build listener
      * @param workspace Build workspace
      * @return Formatted text
-     * @throws IOException
+     * @throws IOException when an unexpected problem occurs
      */
     public static String formatText(
         String text,
@@ -58,31 +58,34 @@ public abstract class IssueCreator {
     /**
      * Creates a GitHub issue for a failing build
      * @param run Build that failed
-     * @param notifier The instance of GitHubIssueNotifier
+     * @param jobConfig the job config of the GitHubIssueNotifier
      * @param repo Repository to create the issue in
      * @param listener Build listener
      * @param workspace Build workspace
      * @return The issue that was created
-     * @throws IOException If creating the issue fails
+     * @throws IOException when an unexpected problem occurs
      */
     public static GHIssue createIssue(
         Run<?, ?> run,
-        GitHubIssueNotifier notifier,
+        GitHubIssueNotifier jobConfig,
         GHRepository repo,
         TaskListener listener,
         FilePath workspace
     ) throws IOException {
-        GitHubIssueNotifier.DescriptorImpl descriptor = notifier.getDescriptor();
-        String title = StringUtils.defaultIfBlank(notifier.getCustomTitle(), descriptor.getIssueTitle());
-        String body = StringUtils.defaultIfBlank(notifier.getCustomBody(), descriptor.getIssueBody());
-        String label = StringUtils.defaultIfBlank(notifier.getCustomLabel(), descriptor.getIssueLabel());
+        final GitHubIssueNotifier.DescriptorImpl globalConfig = jobConfig.getDescriptor();
 
-        GHIssueBuilder issue = repo.createIssue(formatText(title, run, listener, workspace))
+        String title = StringUtils.defaultIfBlank(jobConfig.getIssueTitle(), globalConfig.getIssueTitle());
+        String body = StringUtils.defaultIfBlank(jobConfig.getIssueBody(), globalConfig.getIssueBody());
+        String label = StringUtils.defaultIfBlank(jobConfig.getIssueLabel(), globalConfig.getIssueLabel());
+
+        GHIssueBuilder issueBuilder = repo.createIssue(formatText(title, run, listener, workspace))
             .body(formatText(body, run, listener, workspace));
 
+        GHIssue issue = issueBuilder.create();
+
         if (label != null && !label.isEmpty()) {
-            issue = issue.label(label);
+            issue.setLabels(label.split(",| "));
         }
-        return issue.create();
+        return issue;
     }
 }
