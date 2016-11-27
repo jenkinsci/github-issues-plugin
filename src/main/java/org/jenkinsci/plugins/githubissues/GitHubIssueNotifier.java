@@ -118,11 +118,6 @@ public class GitHubIssueNotifier extends Notifier implements SimpleBuildStep {
             return;
         }
 
-        if (repo == null) {
-            logger.println("WARNING: No GitHub config available for this job, GitHub Issue Notifier will not run!");
-            return;
-        }
-
         Result result = run.getResult();
         final GitHubIssueAction previousGitHubIssueAction = getLatestIssueAction((Build) run.getPreviousBuild());
         GHIssue issue = null;
