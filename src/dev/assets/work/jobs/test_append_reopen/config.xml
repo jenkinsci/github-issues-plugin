@@ -3,12 +3,6 @@
   <actions/>
   <description></description>
   <keepDependencies>false</keepDependencies>
-  <properties>
-    <com.coravy.hudson.plugins.github.GithubProjectProperty>
-      <projectUrl>${github.test.project}</projectUrl>
-      <displayName></displayName>
-    </com.coravy.hudson.plugins.github.GithubProjectProperty>
-  </properties>
   <scm class="hudson.scm.NullSCM"/>
   <canRoam>true</canRoam>
   <disabled>false</disabled>
@@ -25,6 +19,7 @@
     <org.jenkinsci.plugins.githubissues.GitHubIssueNotifier>
       <issueReopen>true</issueReopen>
       <issueAppend>true</issueAppend>
+      <issueRepo>${github.test.project}</issueRepo>
     </org.jenkinsci.plugins.githubissues.GitHubIssueNotifier>
   </publishers>
   <buildWrappers/>

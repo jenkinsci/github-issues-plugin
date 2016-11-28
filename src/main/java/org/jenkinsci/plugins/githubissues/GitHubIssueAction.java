@@ -9,7 +9,6 @@
 package org.jenkinsci.plugins.githubissues;
 
 import hudson.model.BuildBadgeAction;
-import hudson.model.Result;
 import org.jenkinsci.plugins.github.util.XSSApi;
 import org.kohsuke.github.GHIssue;
 
