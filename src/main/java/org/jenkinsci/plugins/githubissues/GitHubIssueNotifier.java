@@ -40,8 +40,8 @@ public class GitHubIssueNotifier extends Notifier implements SimpleBuildStep {
     private String issueBody;
     private String issueLabel;
     private String issueRepo;
-    private boolean issueReopen = true;
-    private boolean issueAppend = true;
+    private boolean issueReopen = false;
+    private boolean issueAppend = false;
 
     /**
      * Initialises the {@link GitHubIssueNotifier} instance.
@@ -83,8 +83,8 @@ public class GitHubIssueNotifier extends Notifier implements SimpleBuildStep {
         if (StringUtils.isNotBlank(this.issueRepo)) {
             repoUrl = this.issueRepo;
         } else {
-            GithubProjectProperty foo = job.getProperty(GithubProjectProperty.class);
-            repoUrl = foo.getProjectUrlStr();
+            GithubProjectProperty project = job.getProperty(GithubProjectProperty.class);
+            repoUrl = project.getProjectUrlStr();
         }
         GitHubRepositoryName repoName = GitHubRepositoryName.create(repoUrl);
         if (repoName == null) {
@@ -211,12 +211,29 @@ public class GitHubIssueNotifier extends Notifier implements SimpleBuildStep {
         return issueLabel;
     }
 
+    /**
+     * Flag to switch between reopening an existing issue or
+     * creating a new one.
+     * @return true if an existing issue should be reopened.
+     */
     public boolean isIssueReopen() {
         return issueReopen;
     }
 
+    /**
+     * Flag to switch between commenting an issue on continuous failure or just on first failure.
+     * @return true if an issue should be commented continuously on feach failures.
+     */
     public boolean isIssueAppend() {
         return issueAppend;
+    }
+
+    /**
+     * An alternative repo to report the issues.
+     * @return the url of the issue repo if set
+     */
+    public String getIssueRepo() {
+        return issueRepo;
     }
 
     @Extension
