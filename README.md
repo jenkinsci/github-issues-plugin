@@ -7,6 +7,7 @@ See the wiki at https://wiki.jenkins-ci.org/display/JENKINS/GitHub+Issues+Plugin
 
 When using the great `job-dsl` plugin, you can configure a publisher step as follows:
 
+### automizing job config
 ```groovy
 job(String name) {
   publishers {
@@ -27,8 +28,22 @@ job(String name) {
   }
 }
 ```
+### Automizing global configuration
+You can modify the global config using a system groovy script, i.e. add a `init.groovy` to the `JENKINS_HOME` dir.
+```groovy
+import org.jenkinsci.plugins.githubissues.GitHubIssueNotifier
+def descriptor = Jenkins.instance.getDescriptorByType(GitHubIssueNotifier.DescriptorImpl)
+descriptor.issueTitle = 'ISSUE TITLE TEMPLATE`
+descriptor.issueBody = 'ISSUE BODY TEMPLATE`
+descriptor.issueLabel = 'LABELA LABELB`
+descriptor.save()
+```
 
+In the templates you can use all available tokens using `${TOKEN}` notation. To see all available tokens, click the help button on the right of the `Content Token Reference` label in the global config ui at the github issue config section.
 
+To configure the global github config and the credential config, see the [`init.groovy`](./src/dev/assets/work/init.groovy) example in the workspace.
+
+## Contribute
 The documentation below is mainly for developers that want to modify the plugin itself.
 
 Building
