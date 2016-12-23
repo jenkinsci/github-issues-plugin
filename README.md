@@ -5,6 +5,30 @@ The Jenkins GitHub Issues plugin allows you to create a GitHub issues whenever y
 
 See the wiki at https://wiki.jenkins-ci.org/display/JENKINS/GitHub+Issues+Plugin for documentation and installation instructions. Report bugs here: http://dl.vc/jenkins-github-issues-bug (you will need to first create a Jenkins account at https://accounts.jenkins.io/)
 
+When using the great `job-dsl` plugin, you can configure a publisher step as follows:
+
+```groovy
+job(String name) {
+  publishers {
+    gitHubIssueNotifier {
+      // Title to use for the GitHub issues created when builds start to fail.
+      issueTitle(String value)
+      // Body text to use for the GitHub issues created when builds start to fail.
+      issueBody(String value)
+      // If specified, this label will be applied to all tasks created through this plugin.
+      issueLabel(String value)
+      // Repo to use for the GitHub issues to create when builds start to fail.
+      issueRepo(String value)
+      // Check this to change the behavior when a job fails a second time and previously created issue exists, if checked, this issue get reopened instead of creating a new one.
+      issueReopen(boolean value)
+      // If checked, and a job is continuously failing, every additional failure adds a new comment.
+      issueAppend(boolean value)
+    }
+  }
+}
+```
+
+
 The documentation below is mainly for developers that want to modify the plugin itself.
 
 Building
