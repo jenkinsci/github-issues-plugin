@@ -74,16 +74,26 @@ public class GitHubIssueNotifier extends Notifier implements SimpleBuildStep {
 
     /**
      * Gets the GitHub repository for the specified job.
-     * @param job The job
+     * @param run The run
      * @return The GitHub repository
      * @throws GitHubRepositoryException when the GitHub repository can not be loaded
      */
-    public GHRepository getRepoForJob(Job<?, ?> job) throws GitHubRepositoryException {
+    public GHRepository getRepoForRun(Run<?, ?> run) throws GitHubRepositoryException {
         final String repoUrl;
         if (StringUtils.isNotBlank(this.issueRepo)) {
             repoUrl = this.issueRepo;
         } else {
-            GithubProjectProperty project = job.getProperty(GithubProjectProperty.class);
+            Job<?, ?> rootJob = run.getParent();
+            if (run instanceof AbstractBuild<?, ?>) {
+                // If the run is an AbstractBuild, it could be a build that contains a root build (for example, a
+                // multi-build project). In that case, we need to get the root project as that's where the GitHub settings
+                // are configured.
+                rootJob = ((AbstractBuild) run).getRootBuild().getProject();
+            }
+            GithubProjectProperty project = rootJob.getProperty(GithubProjectProperty.class);
+            if (project == null) {
+                throw new GitHubRepositoryException("GitHub property not configured");
+            }
             repoUrl = project.getProjectUrlStr();
         }
         GitHubRepositoryName repoName = GitHubRepositoryName.create(repoUrl);
@@ -112,7 +122,7 @@ public class GitHubIssueNotifier extends Notifier implements SimpleBuildStep {
         // If we got here, we need to grab the repo to create an issue (or close an existing issue)
         GHRepository repo;
         try {
-            repo = getRepoForJob(run.getParent());
+            repo = getRepoForRun(run);
         } catch (GitHubRepositoryException ex) {
             logger.println("WARNING: No GitHub config available for this job, GitHub Issue Notifier will not run! Error: " + ex.getMessage());
             return;
