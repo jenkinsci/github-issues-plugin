@@ -5,18 +5,19 @@ The Jenkins GitHub Issues plugin allows you to create a GitHub issues whenever y
 
 See the Jenkins plugins site at https://plugins.jenkins.io/github-issues for documentation and installation instructions. Report bugs here: http://dl.vc/jenkins-github-issues-bug (you will need to first create a Jenkins account at https://accounts.jenkins.io/)
 
-## Contribute
-The documentation below is mainly for developers that want to modify the plugin itself.
+Contribute
+==========
+The documentation below is mainly for developers that want to modify the plugin itself. If you simply want to use the plugin, refer to the documentation on the Jenkins plugin site.
 
 Building
-========
+--------
 Clone this repo and run `mvn hpi:run` to run a test instance of Jekins.
 
 To package, run `mvn package` and grab the `target/github-issues.hpi` file. Run `mvn release:prepare release:perform` to publish.
 
 
 Setup
-=====
+-----
 In order to test the plugin in action, you need to create a dummy project in github and configure it either in your `settings.xml` or 
 in the `prepare-developement-workspace` profile in your `pom.xml`.
 
