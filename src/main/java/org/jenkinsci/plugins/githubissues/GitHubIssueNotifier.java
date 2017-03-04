@@ -25,6 +25,7 @@ import org.kohsuke.github.GHIssue;
 import org.kohsuke.github.GHIssueState;
 import org.kohsuke.github.GHRepository;
 import org.kohsuke.stapler.DataBoundConstructor;
+import org.kohsuke.stapler.DataBoundSetter;
 import org.kohsuke.stapler.StaplerRequest;
 
 import javax.annotation.Nonnull;
@@ -45,6 +46,13 @@ public class GitHubIssueNotifier extends Notifier implements SimpleBuildStep {
 
     /**
      * Initialises the {@link GitHubIssueNotifier} instance.
+     */
+    @DataBoundConstructor
+    public GitHubIssueNotifier() {
+    }
+
+    /**
+     * Initialises the {@link GitHubIssueNotifier} instance.
      * @param issueTitle the issue title
      * @param issueBody  the issue body
      * @param issueLabel the issue label
@@ -52,7 +60,6 @@ public class GitHubIssueNotifier extends Notifier implements SimpleBuildStep {
      * @param issueReopen reopen the issue
      * @param issueAppend append to existing issue
      */
-    @DataBoundConstructor
     public GitHubIssueNotifier(String issueTitle, String issueBody, String issueLabel, String issueRepo, boolean issueReopen, boolean issueAppend) {
         this.issueTitle = issueTitle;
         this.issueBody = issueBody;
@@ -203,6 +210,11 @@ public class GitHubIssueNotifier extends Notifier implements SimpleBuildStep {
         return issueTitle;
     }
 
+    @DataBoundSetter
+    public void setIssueTitle(String issueTitle) {
+        this.issueTitle = issueTitle;
+    }
+
     /**
      * Returns the issue body.
      *
@@ -210,6 +222,11 @@ public class GitHubIssueNotifier extends Notifier implements SimpleBuildStep {
      */
     public String getIssueBody() {
         return issueBody;
+    }
+
+    @DataBoundSetter
+    public void setIssueBody(String issueBody) {
+        this.issueBody = issueBody;
     }
 
     /**
@@ -221,6 +238,11 @@ public class GitHubIssueNotifier extends Notifier implements SimpleBuildStep {
         return issueLabel;
     }
 
+    @DataBoundSetter
+    public void setIssueLabel(String issueLabel) {
+        this.issueLabel = issueLabel;
+    }
+
     /**
      * Flag to switch between reopening an existing issue or
      * creating a new one.
@@ -228,6 +250,11 @@ public class GitHubIssueNotifier extends Notifier implements SimpleBuildStep {
      */
     public boolean isIssueReopen() {
         return issueReopen;
+    }
+
+    @DataBoundSetter
+    public void setIssueReopen(boolean issueReopen) {
+        this.issueReopen = issueReopen;
     }
 
     /**
@@ -238,12 +265,22 @@ public class GitHubIssueNotifier extends Notifier implements SimpleBuildStep {
         return issueAppend;
     }
 
+    @DataBoundSetter
+    public void setIssueAppend(boolean issueAppend) {
+        this.issueAppend = issueAppend;
+    }
+
     /**
      * An alternative repo to report the issues.
      * @return the url of the issue repo if set
      */
     public String getIssueRepo() {
         return issueRepo;
+    }
+
+    @DataBoundSetter
+    public void setIssueRepo(String issueRepo) {
+        this.issueRepo = issueRepo;
     }
 
     @Extension
