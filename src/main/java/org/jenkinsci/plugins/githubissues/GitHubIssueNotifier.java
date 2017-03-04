@@ -136,7 +136,7 @@ public class GitHubIssueNotifier extends Notifier implements SimpleBuildStep {
         }
 
         Result result = run.getResult();
-        final GitHubIssueAction previousGitHubIssueAction = getLatestIssueAction((Build) run.getPreviousBuild());
+        final GitHubIssueAction previousGitHubIssueAction = getLatestIssueAction((AbstractBuild) run.getPreviousBuild());
         GHIssue issue = null;
         if (previousGitHubIssueAction != null) {
             issue = repo.getIssue(previousGitHubIssueAction.getIssueNumber());
@@ -189,13 +189,13 @@ public class GitHubIssueNotifier extends Notifier implements SimpleBuildStep {
         }
     }
 
-    private GitHubIssueAction getLatestIssueAction(Build previousBuild) {
+    private GitHubIssueAction getLatestIssueAction(AbstractBuild previousBuild) {
         if (previousBuild != null) {
             GitHubIssueAction previousGitHubIssueAction = previousBuild.getAction(GitHubIssueAction.class);
             if (previousGitHubIssueAction != null) {
                 return previousGitHubIssueAction;
             } else {
-                return this.getLatestIssueAction((Build) previousBuild.getPreviousBuild());
+                return this.getLatestIssueAction(previousBuild.getPreviousBuild());
             }
         }
         return null;
