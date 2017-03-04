@@ -3,7 +3,7 @@ Jenkins GitHub Issues Plugin
 
 The Jenkins GitHub Issues plugin allows you to create a GitHub issues whenever your build fails. Once the build starts passing again, the issue will automatically be closed.
 
-See the wiki at https://wiki.jenkins-ci.org/display/JENKINS/GitHub+Issues+Plugin for documentation and installation instructions. Report bugs here: http://dl.vc/jenkins-github-issues-bug (you will need to first create a Jenkins account at https://accounts.jenkins.io/)
+See the Jenkins plugins site at https://plugins.jenkins.io/github-issues for documentation and installation instructions. Report bugs here: http://dl.vc/jenkins-github-issues-bug (you will need to first create a Jenkins account at https://accounts.jenkins.io/)
 
 ## Contribute
 The documentation below is mainly for developers that want to modify the plugin itself.
