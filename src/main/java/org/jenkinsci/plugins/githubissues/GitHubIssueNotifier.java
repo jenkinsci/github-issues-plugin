@@ -137,18 +137,10 @@ public class GitHubIssueNotifier extends Notifier implements SimpleBuildStep {
 
         Result result = run.getResult();
 
+        final GitHubIssueAction previousGitHubIssueAction = getLatestIssueAction((Run) run.getPreviousBuild());
         GHIssue issue = null;
-
-        if (run instanceof AbstractBuild) {
-            final GitHubIssueAction previousGitHubIssueAction = getLatestIssueAction((AbstractBuild) run.getPreviousBuild());
-            if (previousGitHubIssueAction != null) {
-                issue = repo.getIssue(previousGitHubIssueAction.getIssueNumber());
-            }
-        } else if (run instanceof Run) {
-            final GitHubIssueAction previousGitHubIssueAction = getLatestIssueAction((Run) run.getPreviousBuild());
-            if (previousGitHubIssueAction != null) {
-                issue = repo.getIssue(previousGitHubIssueAction.getIssueNumber());
-            }
+        if (previousGitHubIssueAction != null) {
+            issue = repo.getIssue(previousGitHubIssueAction.getIssueNumber());
         }
 
         if (result == Result.FAILURE) {
@@ -199,18 +191,6 @@ public class GitHubIssueNotifier extends Notifier implements SimpleBuildStep {
     }
 
     private GitHubIssueAction getLatestIssueAction(Run previousBuild) {
-        if (previousBuild != null) {
-            GitHubIssueAction previousGitHubIssueAction = previousBuild.getAction(GitHubIssueAction.class);
-            if (previousGitHubIssueAction != null) {
-                return previousGitHubIssueAction;
-            } else {
-                return this.getLatestIssueAction(previousBuild.getPreviousBuild());
-            }
-        }
-        return null;
-    }
-
-    private GitHubIssueAction getLatestIssueAction(AbstractBuild previousBuild) {
         if (previousBuild != null) {
             GitHubIssueAction previousGitHubIssueAction = previousBuild.getAction(GitHubIssueAction.class);
             if (previousGitHubIssueAction != null) {
