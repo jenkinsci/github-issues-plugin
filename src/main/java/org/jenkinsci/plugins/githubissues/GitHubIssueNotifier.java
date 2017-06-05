@@ -182,7 +182,7 @@ public class GitHubIssueNotifier extends Notifier implements SimpleBuildStep {
                 logger.format("GitHub Issue Notifier: Build has started failing, filed GitHub issue #%s%n", issue.getNumber());
                 run.addAction(new GitHubIssueAction(issue, GitHubIssueAction.TransitionAction.OPEN));
             }
-        } else if (result == Result.SUCCESS && issue != null && issue.getState() == GHIssueState.OPEN) {
+        } else if ((result == Result.SUCCESS || result == null) && issue != null && issue.getState() == GHIssueState.OPEN) {
             issue.comment("Build was fixed!");
             issue.close();
             logger.format("GitHub Issue Notifier: Build was fixed, closing GitHub issue #%s%n", issue.getNumber());
