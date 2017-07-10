@@ -182,6 +182,9 @@ public class GitHubIssueNotifier extends Notifier implements SimpleBuildStep {
                 logger.format("GitHub Issue Notifier: Build has started failing, filed GitHub issue #%s%n", issue.getNumber());
                 run.addAction(new GitHubIssueAction(issue, GitHubIssueAction.TransitionAction.OPEN));
             }
+        // In declarative pipelines, `result` can be null. The common pattern
+        // is to explicitly set the failure state, so we treat unset as
+        // implying success.
         } else if ((result == Result.SUCCESS || result == null) && issue != null && issue.getState() == GHIssueState.OPEN) {
             issue.comment("Build was fixed!");
             issue.close();
