@@ -136,7 +136,8 @@ public class GitHubIssueNotifier extends Notifier implements SimpleBuildStep {
         }
 
         Result result = run.getResult();
-        final GitHubIssueAction previousGitHubIssueAction = getLatestIssueAction((AbstractBuild) run.getPreviousBuild());
+
+        final GitHubIssueAction previousGitHubIssueAction = getLatestIssueAction((Run) run.getPreviousBuild());
         GHIssue issue = null;
         if (previousGitHubIssueAction != null) {
             issue = repo.getIssue(previousGitHubIssueAction.getIssueNumber());
@@ -181,7 +182,10 @@ public class GitHubIssueNotifier extends Notifier implements SimpleBuildStep {
                 logger.format("GitHub Issue Notifier: Build has started failing, filed GitHub issue #%s%n", issue.getNumber());
                 run.addAction(new GitHubIssueAction(issue, GitHubIssueAction.TransitionAction.OPEN));
             }
-        } else if (result == Result.SUCCESS && issue != null && issue.getState() == GHIssueState.OPEN) {
+        // In declarative pipelines, `result` can be null. The common pattern
+        // is to explicitly set the failure state, so we treat unset as
+        // implying success.
+        } else if ((result == Result.SUCCESS || result == null) && issue != null && issue.getState() == GHIssueState.OPEN) {
             issue.comment("Build was fixed!");
             issue.close();
             logger.format("GitHub Issue Notifier: Build was fixed, closing GitHub issue #%s%n", issue.getNumber());
@@ -189,7 +193,7 @@ public class GitHubIssueNotifier extends Notifier implements SimpleBuildStep {
         }
     }
 
-    private GitHubIssueAction getLatestIssueAction(AbstractBuild previousBuild) {
+    private GitHubIssueAction getLatestIssueAction(Run previousBuild) {
         if (previousBuild != null) {
             GitHubIssueAction previousGitHubIssueAction = previousBuild.getAction(GitHubIssueAction.class);
             if (previousGitHubIssueAction != null) {
